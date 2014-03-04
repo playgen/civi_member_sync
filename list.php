@@ -1,5 +1,25 @@
 <?php
 require_once('civi.php');
+
+function civisync_get_names($values,$memArray){
+	$memArray = array_flip($memArray);
+	$current_rule =  unserialize($values);
+	if(empty($current_rule)) {
+		$current_rule = $values;
+	}
+	$current_roles ="";
+	if(!empty($current_rule)){
+		if(is_array($current_rule)){
+			foreach( $current_rule as $ckey =>$cvalue){
+				$current_roles .= array_search($ckey, $memArray)."<br>";
+			}
+		}else{
+			$current_roles = array_search($current_rule, $memArray)."<br>";
+		}
+	}
+	return $current_roles;
+}
+
 if(isset($_GET['q']) && $_GET['q'] == "delete" ){
 	if(!empty($_GET['id'])) {
 		$delete = $wpdb->get_results( "DELETE FROM `{$wpdb->prefix}_civi_member_sync` WHERE `id`=".$_GET['id']);
@@ -28,7 +48,7 @@ $select = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}_civi_member_sync`"
 <tbody class="list:civimember-role-sync" id="the-list">
 <?php foreach ($select as $key => $value){ ?>
 <tr>
-	<td><?php  echo get_names($value->civi_mem_type, $MembershipType); ?>
+	<td><?php  echo civisync_get_names($value->civi_mem_type, $MembershipType); ?>
 	<br />
 	<?php $edit_url = get_bloginfo('url')."/wp-admin/admin.php?&q=edit&id=".$value->id."&page=civi_member_sync/settings.php";  ?>
 	<?php $delete_url = get_bloginfo('url')."/wp-admin/admin.php?&q=delete&id=".$value->id."&page=civi_member_sync/list.php";  ?>
@@ -39,8 +59,8 @@ $select = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}_civi_member_sync`"
 	</div>
 	</td>
 	<td><?php echo $value->wp_role; ?></td>
-	<td><?php echo get_names($value->current_rule, $MembershipStatus); ?></td>
-	<td><?php echo get_names($value->expiry_rule, $MembershipStatus); ?></td>
+	<td><?php echo civisync_get_names($value->current_rule, $MembershipStatus); ?></td>
+	<td><?php echo civisync_get_names($value->expiry_rule, $MembershipStatus); ?></td>
 	<td><?php echo $value->expire_wp_role; ?></td>
 	</tr>
 	<?php } ?>
