@@ -2,10 +2,10 @@
 /*
 Plugin Name: CiviMember Role Synchronize
 Depends: CiviCRM
-Plugin URI: http:// www.orangecreative.net
+Plugin URI: https://github.com/jeevajoy/Wordpress-CiviCRM-Member-Role-Sync/
 Description: Plugin for CiviCRM Member Check
-Author: Jag Kandasamy
-Version: 1.0
+Author: Jag Kandasamy, Playgen
+Version: 2.0.0alpha
 Author URI: http:// www.orangecreative.net
 */
 
