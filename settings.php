@@ -1,4 +1,10 @@
 <?php
+$wp_role = FALSE;
+$expired_wp_role = FALSE;
+$civi_member_type = FALSE;
+$current_rule = FALSE;
+$expiry_rule = FALSE;
+$nameErr = '';
 require_once('civi.php');
 if(isset($_GET['q']) && $_GET['q'] == "edit" ){
 	if(!empty($_GET['id'])) {
