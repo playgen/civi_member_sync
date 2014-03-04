@@ -14,7 +14,7 @@ define( 'CIVISYNC_USER_ROLE', 'civi_sync' );
 function civisync_setup_db()
 {
 	global $wpdb;
-	$table_name = "{$wpdb->prefix}_civi_member_sync";
+	$table_name = "{$wpdb->prefix}civi_member_sync";
 
 	$sql = "CREATE TABLE IF NOT EXISTS $table_name (
 		`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -77,7 +77,7 @@ function civisync_perform_sync( WP_User $user )
 	$roles = array();
 
 	global $wpdb;
-	$query = "SELECT * FROM `{$wpdb->prefix}_civi_member_sync` WHERE `civi_mem_type`=%s LIMIT 1";
+	$query = "SELECT * FROM `{$wpdb->prefix}civi_member_sync` WHERE `civi_mem_type`=%s LIMIT 1";
 	foreach( (array) $membershibs['values'] as $membershibe ) { // wow
 		$type   = $membershibe['membership_type_id'];
 		$status = $membershibe['status_id'];
