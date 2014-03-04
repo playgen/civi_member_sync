@@ -2,7 +2,7 @@
 require_once('civi.php');
 if(isset($_GET['q']) && $_GET['q'] == "edit" ){
 	if(!empty($_GET['id'])) {
-		$select = $wpdb->get_results( "SELECT * FROM `mtl_civi_member_sync`WHERE `id` =".$_GET['id']);
+		$select = $wpdb->get_results( "SELECT * FROM `{$wpdb->prefix}_civi_member_sync`WHERE `id` =".$_GET['id']);
 		$wp_role = $select[0]->wp_role;
 		$expired_wp_role = $select[0]->expire_wp_role;
 		$civi_member_type  = $select[0]->civi_mem_type;
@@ -153,7 +153,7 @@ if ($_POST) {
 	}
 
 	if(empty($sameType) && empty($errors)) {
-		$insert = $wpdb->get_results( "REPLACE INTO  mtl_civi_member_sync SET `wp_role`='$wp_role', `civi_mem_type`=$civi_member_type, `current_rule`='$current_rule',`expiry_rule`='$expiry_rule', `expire_wp_role`='$expired_wp_role'" );
+		$insert = $wpdb->get_results( "REPLACE INTO  {$wpdb->prefix}_civi_member_sync SET `wp_role`='$wp_role', `civi_mem_type`=$civi_member_type, `current_rule`='$current_rule',`expiry_rule`='$expiry_rule', `expire_wp_role`='$expired_wp_role'" );
 
 		$location = get_bloginfo('url')."/wp-admin/options-general.php?page=civi_member_sync/list.php";
 		echo "<meta http-equiv='refresh' content='0;url=$location' />";exit;
