@@ -66,7 +66,7 @@ function civisync_perform_sync( WP_User $user )
 	) );
 	if ( 0 == $match['count'] )
 		return; // hmm
-	$match = reset( $match );
+	$match = reset( $match['values'] );
 	$contact_id = $match['contact_id'];
 
 	$membershibs = civicrm_api3( "Membership", "get", array(
