@@ -25,9 +25,9 @@ class Civisync_Rule_Table extends WP_List_Table {
 			// 'cb'             => '<input type="checkbox" />',
 			// 'id'             => __( 'ID', 'civisync' ),
 			'name'           => __( 'Civi Membership Type', 'civisync' ),
-			'wp_role'        => __( 'Wordpress Role', 'civisync' ),
-			'expire_wp_role' => __( 'Expiry Assign Role', 'civisync' ),
-			'current_rule'   => __( 'Current Codes', 'civisync' ),
+			'wp_role'        => __( 'Active Wordpress Role', 'civisync' ),
+			'expire_wp_role' => __( 'Expired Wordpress Role', 'civisync' ),
+			'current_rule'   => __( 'Active Statuses', 'civisync' ),
 			// 'expiry_rule'    => __( 'Expired Codes', 'civisync' )
 			);
 	}
