@@ -113,30 +113,5 @@ function civisync_perform_sync( WP_User $user )
 		$user->add_role( $role_name );
 }
 
-
-/**
-function to set setings page for the plugin in menu
-**/
-function setup_civi_member_sync_check_menu() {
-	add_submenu_page('CiviMember Role Sync', 'CiviMember Role Sync', 'List of Rules', 'add_users', 'civi_member_sync/settings.php');
-	add_options_page( 'CiviMember Role Sync', 'CiviMember Role Sync', 'manage_options', 'civi_member_sync/list.php');
-}
-
-add_action("admin_menu", "setup_civi_member_sync_check_menu");
-add_action('admin_init', 'my_plugin_admin_init');
-
-// create the function called by your new action
-function my_plugin_admin_init() {
-	wp_enqueue_script('jquery');
-	wp_enqueue_script('jquery-form');
-}
-
-function plugin_add_settings_link($links) {
-	$settings_link = '<a href="admin.php?page=civi_member_sync/list.php">Settings</a>';
-	array_push( $links, $settings_link );
-	return $links;
-}
-$plugin = plugin_basename(__FILE__);
-add_filter( "plugin_action_links_$plugin", 'plugin_add_settings_link' );
 if ( is_admin() )
 	include 'civisync-options-page.php';
