@@ -173,15 +173,14 @@ function civisync_handle_table_actions( $list_table )
 	if ( 'new' == $action || 'edit' == $action ) {
 		return;
 	} elseif ( 'sync-confirm' == $action ) {
-		if ( ! wp_verify_nonce( @$_REQUEST['_wpnonce'], 'civisync-manual-sync' ) )
-			wp_nonce_ays( $action );
+		check_admin_referer( 'civisync-manual-sync' );
 		return civisync_manual_sync();
 	}
 
 	if ( empty( $_REQUEST['rule'] ) )
 		return;
-	elseif ( ! wp_verify_nonce( @$_REQUEST['_wpnonce'], 'bulk-' . $list_table->_args['plural'] ) )
-		wp_nonce_ays( $action );
+
+	check_admin_referer( 'bulk-' . $list_table->_args['plural'] );
 	$rules = (array) $_REQUEST['rule']; // Abuse that (array) "2" == array("2")
 	// if ( 'disable' == $action )
 	// 	array_walk($rules, 'shib_provider_disable');
