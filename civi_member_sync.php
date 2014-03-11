@@ -209,8 +209,8 @@ add_action( 'admin_menu', function() {
 		$action = $list_table->current_action();
 		if ( $action == 'sync' )
 			include "civisync-options-page-manual-sync.php";
-		// if ( $action == 'new' || $action == 'edit' )
-		// 	include "an-shibboleth-options-page-editor.php";
+		if ( $action == 'new' || $action == 'edit' )
+			include "civisync-options-page-editor.php";
 		else
 			include "civisync-options-page-table.php";
 	} );
