@@ -18,11 +18,10 @@ function civisync_setup_db()
 
 	$sql = "CREATE TABLE IF NOT EXISTS $table_name (
 		`id` int(11) NOT NULL AUTO_INCREMENT,
-		`wp_role` varchar(255) NOT NULL,
 		`civi_mem_type` int(11) NOT NULL,
-		`current_rule` varchar(255) NOT NULL,
-		`expiry_rule` varchar(255) NOT NULL,
+		`wp_role` varchar(255) NOT NULL,
 		`expire_wp_role` varchar(255) NOT NULL,
+		`current_rule` varchar(255) NOT NULL,
 		PRIMARY KEY (`id`),
 		UNIQUE KEY `civi_mem_type` (`civi_mem_type`)
 		) DEFAULT CHARSET=utf8";
