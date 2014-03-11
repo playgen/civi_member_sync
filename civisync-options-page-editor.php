@@ -3,7 +3,7 @@ $membershibs = civisync_get_memberships();
 $statizzles  = civisync_get_stati();
 
 $rule = false;
-if ( $action != 'new' ) {
+if ( 'edit' == $action ) {
 	if ( empty( $_REQUEST['rule'] ) ) {
 		wp_redirect( admin_url('options-general.php?page=' . $_REQUEST['page']) );
 		exit();
@@ -18,10 +18,11 @@ if ( $action != 'new' ) {
 }
 if ( ! $rule ) {
 	$rule = array(
-		'civi_mem_type' => '',
-		'wp_role' => '',
+		'id'             => 0,
+		'civi_mem_type'  => '',
+		'wp_role'        => '',
 		'expire_wp_role' => '',
-		'current_rule' => 'a:0:{}',
+		'current_rule'   => 'a:0:{}',
 	);
 }
 $rule['current_rule'] = unserialize( $rule['current_rule'] );
@@ -72,7 +73,7 @@ global $wp_roles;
 $roles = $wp_roles->get_names();
 ?>
 <div class="wrap">
-	<h2><?php if ( $action == 'new' ) echo 'New'; else echo 'Edit'; ?>
+	<h2><?php if ( 'new' == $action ) echo 'New'; else echo 'Edit'; ?>
 		CiviCRM Membership Sync Rule</h2>
 	<p>
 		Choose a CiviMember Membership Type and a Wordpress Role below.
@@ -83,12 +84,13 @@ $roles = $wp_roles->get_names();
 	</p>
 	<form method="post" action="?page=<?php echo $_REQUEST['page']; ?>">
 		<?php
-			if ( $action == 'new' ) {
+			if ( 'new' == $action ) {
 				wp_nonce_field( 'civisync-rule-new' );
 				echo '<input type="hidden" name="action" value="post-new">';
 			} else {
 				wp_nonce_field( 'civisync-rule-edit' );
 				echo '<input type="hidden" name="action" value="post-edit">';
+				echo '<input type="hidden" name="rule" value="' . $rule['id'] . '">';
 			}
 		?>
 
@@ -109,7 +111,7 @@ $roles = $wp_roles->get_names();
 		?>
 		</table>
 		<?php submit_button(
-			__( 'Add Rule', 'civisync' ),
+			( 'new' == $action ) ? __( 'Add Rule', 'civisync' ) : __( 'Update Rule', 'civisync' ),
 			'primary',
 			'submit'
 		); ?>
