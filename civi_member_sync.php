@@ -114,6 +114,63 @@ function civisync_perform_sync( WP_User $user )
 		$user->add_role( $role_name );
 }
 
+function _civisync_get_name( array $arr ) {
+	return $arr['name'];
+}
+function _civisync_get_the_thing( $name )
+{
+	try {
+		civicrm_initialize();
+		$things = civicrm_api3( $name, "get" );
+		return array_map( '_civisync_get_name', $things['values'] );
+	} catch ( CiviCRM_API3_Exception $e ) {
+		CRM_Core_Error::handleUnhandledException( $e );
+	}
+}
+
+function civisync_get_memberships()
+{
+	return _civisync_get_the_thing( "MembershipType" );
+}
+function civisync_get_stati()
+{
+	return _civisync_get_the_thing( "MembershipStatus" );
+}
+
+add_action( 'admin_menu', function() {
+	$list_table = null;
+	// add_options_page( $page_title, $menu_title, $capability, $menu_slug, $function );
+	$id = add_options_page( "CiviCRM Membership to WordPress Roles", "CiviCRM ↔ WP Sync", 'manage_options', 'civisync', function() use( &$list_table )
+	{
+		$action = $list_table->current_action();
+		// if ( $action == 'new' || $action == 'edit' )
+		// 	include "an-shibboleth-options-page-editor.php";
+		// else
+			include "civisync-options-page-table.php";
+	} );
+	add_action( "load-{$id}", function() use( &$list_table )
+	{
+		$ms = civisync_get_memberships();
+		$ss = civisync_get_stati();
+		require 'class-civisync-role-table.php';
+		$list_table = new Civisync_Role_Table( $ms, $ss );
+		civisync_get_memberships();
+		// shib_handle_table_actions( $list_table );
+		$list_table->prepare_items();
+		add_screen_option( 'per_page', array(
+			'label' => 'Roles',
+			'default' => 10,
+			'option' => 'civisync_roles_per_page'
+		) );
+	} );
+} );
+add_filter('set-screen-option', function( $status, $option, $value )
+{
+	if ( 'civisync_roles_per_page' == $option )
+		return $value;
+	return $status;
+}, 10, 3);
+
 /**
 function to set setings page for the plugin in menu
 **/
