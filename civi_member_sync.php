@@ -114,6 +114,34 @@ function civisync_perform_sync( WP_User $user )
 		$user->add_role( $role_name );
 }
 
+function civisync_manual_sync()
+{
+	$errors = array();
+	foreach( (array) get_users() as $user ) {
+		try {
+			civisync_perform_sync( $user );
+		} catch( CiviCRM_API3_Exception $e ) {
+			$errors[ $user->display_name ] = $e->getErrorMessage();
+		}
+	}
+	add_action( 'admin_notices', function() use( $errors )
+	{
+?>
+<div class="updated">
+	<p>Manual Synchronisation completed
+<?php if ( count( $errors ) > 0 ): ?>
+	with <?= count( $errors ) ?> errors.
+<?php endif; ?>
+	</p>
+</div>
+<?php foreach( $errors as $user => $message ): ?>
+<div class="error">
+	<p><strong><?= $user ?></strong>: <?= $message ?></p>
+</div>
+<?php endforeach;
+	} );
+}
+
 function _civisync_get_name( array $arr ) {
 	return $arr['name'];
 }
@@ -125,6 +153,21 @@ function _civisync_get_the_thing( $name )
 		return array_map( '_civisync_get_name', $things['values'] );
 	} catch ( CiviCRM_API3_Exception $e ) {
 		CRM_Core_Error::handleUnhandledException( $e );
+	}
+}
+
+function civisync_handle_table_actions( $list_table )
+{
+	$action = $list_table->current_action();
+	if ( ! $action )
+		return;
+	// These actions don't require anything happening
+	if ( 'new' == $action || 'edit' == $action ) {
+		return;
+	} elseif ( 'sync-confirm' == $action ) {
+		if ( ! wp_verify_nonce( @$_REQUEST['_wpnonce'], 'civisync-manual-sync' ) )
+			wp_nonce_ays( $action );
+		return civisync_manual_sync();
 	}
 }
 
@@ -143,9 +186,11 @@ add_action( 'admin_menu', function() {
 	$id = add_options_page( "CiviCRM Membership to WordPress Roles", "CiviCRM ↔ WP Sync", 'manage_options', 'civisync', function() use( &$list_table )
 	{
 		$action = $list_table->current_action();
+		if ( $action == 'sync' )
+			include "civisync-options-page-manual-sync.php";
 		// if ( $action == 'new' || $action == 'edit' )
 		// 	include "an-shibboleth-options-page-editor.php";
-		// else
+		else
 			include "civisync-options-page-table.php";
 	} );
 	add_action( "load-{$id}", function() use( &$list_table )
@@ -155,7 +200,7 @@ add_action( 'admin_menu', function() {
 		require 'class-civisync-rule-table.php';
 		$list_table = new Civisync_Rule_Table( $ms, $ss );
 		civisync_get_memberships();
-		// shib_handle_table_actions( $list_table );
+		civisync_handle_table_actions( $list_table );
 		$list_table->prepare_items();
 		add_screen_option( 'per_page', array(
 			'label' => 'Rules per page',
@@ -176,7 +221,6 @@ function to set setings page for the plugin in menu
 **/
 function setup_civi_member_sync_check_menu() {
 	add_submenu_page('CiviMember Role Sync', 'CiviMember Role Sync', 'List of Rules', 'add_users', 'civi_member_sync/settings.php');
-	add_submenu_page('CiviMember Role Manual Sync', 'CiviMember Role Manual Sync', 'List of Rules', 'add_users', 'civi_member_sync/manual_sync.php');
 	add_options_page( 'CiviMember Role Sync', 'CiviMember Role Sync', 'manage_options', 'civi_member_sync/list.php');
 }
 
