@@ -155,6 +155,66 @@ function _civisync_get_the_thing( $name )
 	}
 }
 
+function civisync_rule_message( $action, $error = false )
+{
+	add_action( 'admin_notices', function() use( $action, $error )
+	{
+		if ( $error ):
+?>
+<div class="error">
+	<p><strong>Unable to <?= $action; ?> rule</strong>: <?= $error; ?></p>
+</div>
+<?php else: ?>
+<div class="updated">
+	<p>Rule <?= $action; ?>d</p>
+</div>
+<?php
+		endif;
+	} );
+}
+
+function _civisync_param_require( $name, $optional = false )
+{
+	if ( empty( $_REQUEST[ $name ] ) ) {
+		if ( $optional && isset( $_REQUEST[ $name ] ) )
+			return '';
+		wp_die( "Missing parameter '$name'!", "Missing parameter" );
+	}
+	return $_REQUEST[ $name ];
+}
+
+function _civisync_get_req_data()
+{
+	$params = array(
+		'civi_mem_type'  => _civisync_param_require( 'civi_mem_type' ),
+		'wp_role'        => _civisync_param_require( 'wp_role' ),
+		'expire_wp_role' => _civisync_param_require( 'expire_wp_role', true ),
+		'current_rule'   => _civisync_param_require( 'activation_rules' ),
+	);
+	if ( ! is_array( $params['current_rule'] ) )
+		wp_die( "Parameter 'activation_rules' is supposed to be an array!" );
+	$params['current_rule'] = serialize( $params['current_rule'] );
+	return $params;
+}
+
+function civisync_rule_create()
+{
+	global $wpdb;
+	$params = _civisync_get_req_data();
+	$wpdb->insert( $wpdb->prefix . 'civi_member_sync', $params );
+	civisync_rule_message( 'create' );
+}
+function civisync_rule_edit()
+{
+	global $wpdb;
+	$id = _civisync_param_require( 'rule' );
+	$params = _civisync_get_req_data();
+	$wpdb->update( $wpdb->prefix . 'civi_member_sync', $params, array(
+		'id' => $id
+	), null, array( '%d' ) );
+	civisync_rule_message( 'update' );
+}
+
 function civisync_rule_delete( $id )
 {
 	global $wpdb;
@@ -171,6 +231,12 @@ function civisync_handle_table_actions( $list_table )
 	// These actions don't require anything happening
 	if ( 'new' == $action || 'edit' == $action ) {
 		return;
+	} elseif ( 'post-new' == $action ) {
+		check_admin_referer( 'civisync-rule-new' );
+		return civisync_rule_create();
+	} elseif ( 'post-edit' == $action ) {
+		check_admin_referer( 'civisync-rule-edit' );
+		return civisync_rule_edit();
 	} elseif ( 'sync-confirm' == $action ) {
 		check_admin_referer( 'civisync-manual-sync' );
 		return civisync_manual_sync();
