@@ -156,6 +156,14 @@ function _civisync_get_the_thing( $name )
 	}
 }
 
+function civisync_rule_delete( $id )
+{
+	global $wpdb;
+	$wpdb->delete( $wpdb->prefix . 'civi_member_sync', array(
+		'id' => $id
+	), array( '%d' ) );
+}
+
 function civisync_handle_table_actions( $list_table )
 {
 	$action = $list_table->current_action();
@@ -169,6 +177,19 @@ function civisync_handle_table_actions( $list_table )
 			wp_nonce_ays( $action );
 		return civisync_manual_sync();
 	}
+
+	if ( empty( $_REQUEST['rule'] ) )
+		return;
+	elseif ( ! wp_verify_nonce( @$_REQUEST['_wpnonce'], 'bulk-' . $list_table->_args['plural'] ) )
+		wp_nonce_ays( $action );
+	$rules = (array) $_REQUEST['rule']; // Abuse that (array) "2" == array("2")
+	// if ( 'disable' == $action )
+	// 	array_walk($rules, 'shib_provider_disable');
+	// elseif ( 'enable' == $action )
+	// 	array_walk($rules, 'shib_provider_enable');
+	// else
+	if ( 'delete' == $action )
+		array_walk($rules, 'civisync_rule_delete');
 }
 
 function civisync_get_memberships()
