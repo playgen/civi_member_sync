@@ -28,7 +28,7 @@ class Civisync_Rule_Table extends WP_List_Table {
 			'wp_role'        => __( 'Wordpress Role', 'civisync' ),
 			'expire_wp_role' => __( 'Expiry Assign Role', 'civisync' ),
 			'current_rule'   => __( 'Current Codes', 'civisync' ),
-			'expiry_rule'    => __( 'Expired Codes', 'civisync' )
+			// 'expiry_rule'    => __( 'Expired Codes', 'civisync' )
 			);
 	}
 
