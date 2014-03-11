@@ -89,7 +89,7 @@ function civisync_perform_sync( WP_User $user )
 			$roles[ $type ] = array();
 		if ( in_array( $status, $current_rule ) ) {
 			$roles[ $type ]['active'] = $res->wp_role;
-		} else {
+		} elseif ( $res->expire_wp_role ) {
 			$roles[ $type ]['inactive'] = $res->expire_wp_role;
 		}
 	}
