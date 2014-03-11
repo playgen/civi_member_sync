@@ -24,7 +24,7 @@ class Civisync_Rule_Table extends WP_List_Table {
 		return array(
 			// 'cb'             => '<input type="checkbox" />',
 			// 'id'             => __( 'ID', 'civisync' ),
-			'name'  => __( 'Civi Membership Type', 'civisync' ),
+			'name'           => __( 'Civi Membership Type', 'civisync' ),
 			'wp_role'        => __( 'Wordpress Role', 'civisync' ),
 			'expire_wp_role' => __( 'Expiry Assign Role', 'civisync' ),
 			'current_rule'   => __( 'Current Codes', 'civisync' ),
