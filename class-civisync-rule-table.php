@@ -6,6 +6,7 @@ class Civisync_Rule_Table extends WP_List_Table {
 
 	private $memberships;
 	private $statuses;
+	private $roles;
 	/**
 	 * Constructor, we override the parent to pass our own arguments
 	 * We usually focus on three parameters: singular and plural labels, as well as whether the class supports AJAX.
@@ -16,8 +17,10 @@ class Civisync_Rule_Table extends WP_List_Table {
 			'plural'   => 'civisync_rules', // plural label, also this well be one of the table css class
 			'ajax'     => false // We won't support Ajax for this table
 		) );
+		global $wp_roles;
 		$this->memberships = $memberships;
-		$this->statuses = $statuses;
+		$this->statuses    = $statuses;
+		$this->roles       = $wp_roles->get_names();
 	}
 
 	function get_columns() {
@@ -112,9 +115,26 @@ class Civisync_Rule_Table extends WP_List_Table {
 		return $this->_column_membership_status( $item->expiry_rule );
 	}
 
+	function column_wp_role( $item )
+	{
+		return $this->_column_wordpress_role( $item->wp_role );
+	}
+
+	function column_expire_wp_role( $item )
+	{
+		return $this->_column_wordpress_role( $item->expire_wp_role );
+	}
+
 	function column_default( $item, $column )
 	{
 		return $item->{$column};
+	}
+
+	function _column_wordpress_role( $role )
+	{
+		if ( isset( $this->roles[ $role ] ) )
+			return $this->roles[ $role ];
+		return $role;
 	}
 
 	function _column_membership_status( $rules )
