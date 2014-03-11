@@ -2,7 +2,7 @@
 if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
-class Civisync_Role_Table extends WP_List_Table {
+class Civisync_Rule_Table extends WP_List_Table {
 
 	private $memberships;
 	private $statuses;
@@ -12,8 +12,8 @@ class Civisync_Role_Table extends WP_List_Table {
 	 */
 	function __construct( $memberships, $statuses ) {
 		parent::__construct( array(
-			'singular' => 'civisync_role', // Singular label
-			'plural'   => 'civisync_roles', // plural label, also this well be one of the table css class
+			'singular' => 'civisync_rule', // Singular label
+			'plural'   => 'civisync_rules', // plural label, also this well be one of the table css class
 			'ajax'     => false // We won't support Ajax for this table
 		) );
 		$this->memberships = $memberships;
@@ -49,7 +49,7 @@ class Civisync_Role_Table extends WP_List_Table {
 
 		// Pagination Args
 		$totalitems = $wpdb->get_var("SELECT count(`id`) FROM `{$table}`");
-		$perpage = $this->get_items_per_page( 'roles_per_page', 10 );
+		$perpage = $this->get_items_per_page( 'rules_per_page', 10 );
 		// This is done as early as possible because it might result in a redirect.
 		$this->set_pagination_args( array(
 			"total_items" => $totalitems,
@@ -88,14 +88,14 @@ class Civisync_Role_Table extends WP_List_Table {
 	}
 	function column_cb( $item ) {
 		return sprintf(
-			'<input type="checkbox" name="provider[]" value="%s" />', $item->id
+			'<input type="checkbox" name="rule[]" value="%s" />', $item->id
 		);
 	}
 
 	function column_name( $item )
 	{
 		// Use bulk- just so the damn thing works
-		$url = wp_nonce_url( "?page={$_REQUEST['page']}&role={$item->id}", 'bulk-' . $this->_args['plural'] );
+		$url = wp_nonce_url( "?page={$_REQUEST['page']}&rule={$item->id}", 'bulk-' . $this->_args['plural'] );
 		$link = '<a href="'. $url .'&action=%s">%s</a>';
 		$actions = array();
 		$actions['edit']   = sprintf( $link, 'edit', "Edit" );

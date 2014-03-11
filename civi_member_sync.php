@@ -152,21 +152,21 @@ add_action( 'admin_menu', function() {
 	{
 		$ms = civisync_get_memberships();
 		$ss = civisync_get_stati();
-		require 'class-civisync-role-table.php';
-		$list_table = new Civisync_Role_Table( $ms, $ss );
+		require 'class-civisync-rule-table.php';
+		$list_table = new Civisync_Rule_Table( $ms, $ss );
 		civisync_get_memberships();
 		// shib_handle_table_actions( $list_table );
 		$list_table->prepare_items();
 		add_screen_option( 'per_page', array(
-			'label' => 'Roles',
+			'label' => 'Rules per page',
 			'default' => 10,
-			'option' => 'civisync_roles_per_page'
+			'option' => 'civisync_rules_per_page'
 		) );
 	} );
 } );
 add_filter('set-screen-option', function( $status, $option, $value )
 {
-	if ( 'civisync_roles_per_page' == $option )
+	if ( 'civisync_rules_per_page' == $option )
 		return $value;
 	return $status;
 }, 10, 3);
