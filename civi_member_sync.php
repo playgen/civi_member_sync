@@ -1,12 +1,12 @@
 <?php
 /*
-Plugin Name: CiviMember Role Synchronize
+Plugin Name: CiviMember Role Synchronisation
 Depends: CiviCRM
 Plugin URI: https://github.com/jeevajoy/Wordpress-CiviCRM-Member-Role-Sync/
-Description: Plugin for CiviCRM Member Check
+Description: Ensures your CiviCRM users have roles to match their memberships.
 Author: Jag Kandasamy, Playgen
-Version: 2.0.0alpha
-Author URI: http:// www.orangecreative.net
+Version: 2.0.0
+Author URI: http://www.orangecreative.net
 */
 
 define( 'CIVISYNC_USER_ROLE', 'civi_sync' );
