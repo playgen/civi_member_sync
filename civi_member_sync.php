@@ -30,7 +30,7 @@ function civisync_setup_db()
 }
 function civisync_register_roles()
 {
-	add_role( 'civi_sync', 'Civi Sync User' );
+	add_role( 'civi_sync', 'Civi Sync User', array( 'read' ) );
 }
 register_activation_hook( __FILE__, function()
 {
