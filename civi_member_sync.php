@@ -40,6 +40,7 @@ register_activation_hook( __FILE__, function()
 
 function civisync_wp_login( /* string */ $user_login, WP_User $user )
 {
+	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	if ( ! is_plugin_active( "civicrm/civicrm.php" ) )
 		return;
 	civicrm_initialize(); // In case it's not already
